@@ -54,6 +54,13 @@ class MainActivity : AppCompatActivity() {
             downloadManager.enqueue(request)// enqueue puts the download request in the queue.
     }
 
+    private fun navigateToDetailsActivity(fileName: String, status: String) {
+        val switchActivityIntent = Intent(this, DetailActivity::class.java)
+        switchActivityIntent.putExtra(FILE_NAME_KEY, fileName)
+        switchActivityIntent.putExtra(STATUS_KEY, status)
+        startActivity(switchActivityIntent)
+    }
+
     companion object {
 
         private const val URL =
