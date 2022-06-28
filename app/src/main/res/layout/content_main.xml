@@ -74,32 +74,13 @@
                 android:id="@+id/custom_button"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
+                app:defaultBackgroundColor="@color/colorPrimary"
+                app:defaultText="@string/download"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ProgressBar
-                android:visibility="invisible"
-                android:id="@+id/download_progress_bar"
-                style="@android:style/Widget.ProgressBar.Horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:progress="25"
-                android:progressBackgroundTint="@color/colorPrimary"
-                android:progressTint="@color/colorPrimaryDark"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:visibility="invisible"
-                android:id="@+id/download_progress_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/button_loading"
-                android:textColor="@color/white"
-                app:layout_constraintBottom_toBottomOf="@id/download_progress_bar"
-                app:layout_constraintEnd_toEndOf="@id/download_progress_bar"
-                app:layout_constraintStart_toStartOf="@id/download_progress_bar"
-                app:layout_constraintTop_toTopOf="@id/download_progress_bar" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:progressBarColor="@color/colorPrimaryDark"
+                app:progressBarText="@string/button_loading"
+                app:textColor="@color/white" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 

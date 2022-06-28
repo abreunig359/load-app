@@ -49,11 +49,8 @@ class MainActivity : AppCompatActivity() {
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-            download_progress_bar.visibility = View.INVISIBLE
-            download_progress_text.visibility = View.INVISIBLE
             custom_button.isEnabled = true
-
-            Log.i("MainActivity", "finished download")
+            custom_button.changeButtonState(ButtonState.Completed)
         }
     }
 
@@ -88,13 +85,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun setDownloadOnClickListener(url: String) {
         custom_button.setOnClickListener {
-            download_progress_bar.visibility = View.VISIBLE
-            download_progress_text.visibility = View.VISIBLE
-            val progressAnimator = ObjectAnimator.ofInt(download_progress_bar, "progress", 0, 100)
-            progressAnimator.duration = LOADING_ANIMATION_DURATION_MS
-            progressAnimator.disableViewOnAnimationStart(it)
-            progressAnimator.start()
             download(url)
+            custom_button.changeButtonState(ButtonState.Loading)
         }
     }
 
@@ -137,11 +129,5 @@ class MainActivity : AppCompatActivity() {
             "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter/archive/master.zip"
         private const val RETROFIT_URL = "https://github.com/square/retrofit/archive/master.zip"
         private const val CHANNEL_ID = "channelId"
-
-        private const val LOADING_ANIMATION_DURATION_MS = 2000L
     }
-}
-
-private enum class DownloadUrl(val url: String) {
-
 }
