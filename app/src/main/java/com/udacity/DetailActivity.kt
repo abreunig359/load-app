@@ -3,18 +3,14 @@ package com.udacity
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
-import com.udacity.databinding.ContentDetailBinding
 import kotlinx.android.synthetic.main.activity_detail.*
+import kotlinx.android.synthetic.main.content_detail.*
 
 class DetailActivity : AppCompatActivity() {
 
-    private lateinit var binding: ContentDetailBinding
-    private lateinit var viewModel: DetailViewModel
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ContentDetailBinding.inflate(layoutInflater)
+        setContentView(R.layout.activity_detail)
 
         val status = intent.getStringExtra(STATUS_KEY)
         val fileName = intent.getStringExtra(FILE_NAME_KEY)
@@ -23,18 +19,16 @@ class DetailActivity : AppCompatActivity() {
             throw MissingDetailParameterException(fileName, status)
         }
 
-        initializeViewModel(fileName, status)
+        file_name_text.text = fileName
+        status_text.text = status
 
-        setContentView(R.layout.activity_detail)
+        ok_button.setOnClickListener {
+            navigateToMainActivity()
+        }
+
         setSupportActionBar(toolbar)
     }
 
-    private fun initializeViewModel(fileName: String, status: String) {
-        val viewModelFactory = DetailViewModel.Factory(fileName, status)
-        val viewModelProvider = ViewModelProvider(this, viewModelFactory)
-        viewModel = viewModelProvider[DetailViewModel::class.java]
-        binding.viewModel = viewModel
-    }
 
     private fun navigateToMainActivity() {
         val switchActivityIntent = Intent(this, MainActivity::class.java)
@@ -42,5 +36,5 @@ class DetailActivity : AppCompatActivity() {
     }
 }
 
-class MissingDetailParameterException(private val fileName: String?, private val status: String?) :
+class MissingDetailParameterException(fileName: String?, status: String?) :
     Exception("Parameter was not passed from main activity, fileName: $fileName, status: $status")

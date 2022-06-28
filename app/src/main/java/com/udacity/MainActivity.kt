@@ -1,11 +1,8 @@
 package com.udacity
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
-import android.animation.ObjectAnimator
 import android.app.DownloadManager
+import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -13,20 +10,15 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : AppCompatActivity() {
 
     private var downloadID: Long = 0
-
-    private lateinit var notificationManager: NotificationManager
-    private lateinit var pendingIntent: PendingIntent
-    private lateinit var action: NotificationCompat.Action
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,13 +36,36 @@ class MainActivity : AppCompatActivity() {
         }
 
         handleRadioButtonSelected()
+        createChannel()
+    }
+
+    private fun createChannel() {
+        val notificationChannel =
+            NotificationChannel(
+                CHANNEL_ID,
+                CHANNEL_NAME,
+                NotificationManager.IMPORTANCE_DEFAULT
+            ).apply {
+                enableVibration(true)
+                description = CHANNEL_NAME
+                setShowBadge(false)
+            }
+
+        val notificationManager = getSystemService(
+            NotificationManager::class.java
+        )
+        notificationManager.createNotificationChannel(notificationChannel)
     }
 
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+            val status = getDownloadStatus(id!!)
+
             custom_button.isEnabled = true
             custom_button.changeButtonState(ButtonState.Completed)
+
+            sendNotification(fileName = "fileName", status = status)
         }
     }
 
@@ -98,7 +113,6 @@ class MainActivity : AppCompatActivity() {
                 .setRequiresCharging(false)
                 .setAllowedOverMetered(true)
                 .setAllowedOverRoaming(true)
-                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
 
         val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
         downloadID =
@@ -106,20 +120,16 @@ class MainActivity : AppCompatActivity() {
         Log.i("MainActivity", "download triggered")
     }
 
-    private fun navigateToDetailsActivity(fileName: String, status: String) {
-        val switchActivityIntent = Intent(this, DetailActivity::class.java)
-        switchActivityIntent.putExtra(FILE_NAME_KEY, fileName)
-        switchActivityIntent.putExtra(STATUS_KEY, status)
-        startActivity(switchActivityIntent)
-    }
-
-    private fun ObjectAnimator.disableViewOnAnimationStart(view: View) {
-        addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationStart(animation: Animator?) {
-                super.onAnimationStart(animation)
-                view.isEnabled = false
-            }
-        })
+    private fun sendNotification(fileName: String, status: String) {
+        val notificationManager = ContextCompat.getSystemService(
+            applicationContext,
+            NotificationManager::class.java
+        ) as NotificationManager
+        notificationManager.sendNotification(
+            fileName = fileName,
+            status = status,
+            applicationContext
+        )
     }
 
     companion object {
@@ -128,6 +138,8 @@ class MainActivity : AppCompatActivity() {
         private const val UDACITY_URL =
             "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter/archive/master.zip"
         private const val RETROFIT_URL = "https://github.com/square/retrofit/archive/master.zip"
-        private const val CHANNEL_ID = "channelId"
+        const val CHANNEL_ID = "channelId"
+        const val CHANNEL_NAME = "Downloads"
+        const val NOTIFICATION_ID = 0
     }
 }
