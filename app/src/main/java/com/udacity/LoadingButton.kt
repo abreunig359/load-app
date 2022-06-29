@@ -187,6 +187,6 @@ class LoadingButton @JvmOverloads constructor(
 
     companion object {
 
-        private const val LOADING_ANIMATION_DURATION_MS = 2000L
+        private const val LOADING_ANIMATION_DURATION_MS = 1500L
     }
 }
