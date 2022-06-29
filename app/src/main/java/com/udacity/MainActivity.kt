@@ -10,7 +10,6 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_main.*
@@ -29,11 +28,7 @@ class MainActivity : AppCompatActivity() {
         registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
         custom_button.setOnClickListener {
-            Toast.makeText(
-                applicationContext,
-                R.string.select_download_file_message,
-                Toast.LENGTH_SHORT
-            ).show()
+            custom_button.changeButtonState(ButtonState.Clicked)
         }
 
         handleRadioButtonSelected()

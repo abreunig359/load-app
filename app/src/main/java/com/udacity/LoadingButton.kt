@@ -11,6 +11,7 @@ import android.graphics.Typeface
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.core.content.withStyledAttributes
 import kotlin.properties.Delegates
 
@@ -48,6 +49,7 @@ class LoadingButton @JvmOverloads constructor(
 
     private var buttonState: ButtonState by Delegates.observable<ButtonState>(ButtonState.Completed) { p, old, new ->
         when (new) {
+            ButtonState.Clicked -> onButtonStateClicked()
             ButtonState.Loading -> onButtonStateLoading()
             ButtonState.Completed -> onButtonStateCompleted()
         }
@@ -68,8 +70,25 @@ class LoadingButton @JvmOverloads constructor(
         isClickable = true
     }
 
+    private fun onButtonStateClicked() {
+        isClickable = false
+        Toast.makeText(
+            this.context,
+            R.string.select_download_file_message,
+            Toast.LENGTH_SHORT
+        ).show()
+        changeButtonState(ButtonState.Completed)
+    }
+
+    private fun onButtonStateCompleted() {
+        paint.color = defaultBackgroundColor
+        currentText = defaultText
+        isClickable = true
+    }
+
     private fun onButtonStateLoading() {
         currentText = progressBarText
+        isClickable = false
         val progressBarAnimator = animateProgressBar()
         val progressCircleAnimator = animateProgressCircle()
         val animatorSet = AnimatorSet().apply {
@@ -96,11 +115,6 @@ class LoadingButton @JvmOverloads constructor(
         }
         animator.duration = LOADING_ANIMATION_DURATION_MS
         return animator
-    }
-
-    private fun onButtonStateCompleted() {
-        paint.color = defaultBackgroundColor
-        currentText = defaultText
     }
 
     override fun onDraw(canvas: Canvas) {
