@@ -23,7 +23,7 @@ fun NotificationManager.sendNotification(
         applicationContext,
         NOTIFICATION_ID,
         switchActivityIntent,
-        PendingIntent.FLAG_UPDATE_CURRENT
+        PendingIntent.FLAG_IMMUTABLE
     )
 
     val style = NotificationCompat.BigTextStyle()
@@ -41,7 +41,6 @@ fun NotificationManager.sendNotification(
         .setSmallIcon(R.drawable.ic_baseline_cloud_download_24)
         .setContentTitle(applicationContext.getString(R.string.notification_title))
         .setContentText(applicationContext.getString(R.string.notification_description))
-        .setStyle(style)
         .addAction(action)
         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
         .setAutoCancel(true)

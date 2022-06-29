@@ -19,6 +19,7 @@ import kotlinx.android.synthetic.main.content_main.*
 class MainActivity : AppCompatActivity() {
 
     private var downloadID: Long = 0
+    private var selectedFileName: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,7 +66,7 @@ class MainActivity : AppCompatActivity() {
             custom_button.isEnabled = true
             custom_button.changeButtonState(ButtonState.Completed)
 
-            sendNotification(fileName = "fileName", status = status)
+            sendNotification(fileName = selectedFileName, status = status)
         }
     }
 
@@ -91,18 +92,28 @@ class MainActivity : AppCompatActivity() {
     private fun handleRadioButtonSelected() {
         download_links_radio.setOnCheckedChangeListener { group, checkedId ->
             when (checkedId) {
-                R.id.radio_glide -> setDownloadOnClickListener(GLIDE_URL)
-                R.id.radio_retrofit -> setDownloadOnClickListener(RETROFIT_URL)
-                R.id.radio_udacity -> setDownloadOnClickListener(UDACITY_URL)
+                R.id.radio_glide -> setDownloadOnClickListener(
+                    GLIDE_URL,
+                    getString(R.string.glide_radio_title)
+                )
+                R.id.radio_retrofit -> setDownloadOnClickListener(
+                    RETROFIT_URL,
+                    getString(R.string.retrofit_radio_title)
+                )
+                R.id.radio_udacity -> setDownloadOnClickListener(
+                    UDACITY_URL,
+                    getString(R.string.load_app_radio_title)
+                )
             }
         }
     }
 
-    private fun setDownloadOnClickListener(url: String) {
+    private fun setDownloadOnClickListener(url: String, fileName: String) {
         custom_button.setOnClickListener {
             download(url)
             custom_button.changeButtonState(ButtonState.Loading)
         }
+        selectedFileName = fileName
     }
 
     private fun download(url: String) {
