@@ -40,6 +40,11 @@ class MainActivity : AppCompatActivity() {
         createChannel()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(receiver)
+    }
+
     private fun createChannel() {
         val notificationChannel =
             NotificationChannel(

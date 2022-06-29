@@ -23,7 +23,8 @@ fun NotificationManager.sendNotification(
         applicationContext,
         NOTIFICATION_ID,
         switchActivityIntent,
-        PendingIntent.FLAG_IMMUTABLE
+        PendingIntent.FLAG_UPDATE_CURRENT or
+            PendingIntent.FLAG_IMMUTABLE
     )
 
     val style = NotificationCompat.BigTextStyle()
@@ -42,6 +43,7 @@ fun NotificationManager.sendNotification(
         .setContentTitle(applicationContext.getString(R.string.notification_title))
         .setContentText(applicationContext.getString(R.string.notification_description))
         .addAction(action)
+        .setStyle(style)
         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
         .setAutoCancel(true)
 
